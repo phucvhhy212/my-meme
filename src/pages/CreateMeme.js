@@ -24,16 +24,21 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 export default function CreateMeme() {
   const navigate = useNavigate();
+  // State variables to manage form inputs and image preview
   const [xCoordinate, setXCoordinate] = useState(0);
   const [yCoordinate, setYCoordinate] = useState(0);
   const [color, setColor] = useState("");
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState("");
+
+  // Clean up the image preview URL when the component unmounts or image changes
   useEffect(() => {
     return () => {
       image && URL.revokeObjectURL(image.preview);
     };
   }, [image]);
+
+  // Handlers for form input changes
   const handleYCoordinateChange = (value) => {
     setYCoordinate(value);
   };
@@ -51,9 +56,13 @@ export default function CreateMeme() {
     file.preview = URL.createObjectURL(file.originFileObj);
     setImage(file);
   };
+
+  // Form submission handler
   const onFinish = (values) => {
     let key = values.image.file.name;
     let imageUrl = "";
+
+    // Get presigned URL, upload file, get object version, and create submission
     getPresignedURL(key)
       .then((res) => uploadFile(res.data, values.image))
       .then((res) => {
@@ -96,6 +105,7 @@ export default function CreateMeme() {
             span: 12,
           }}
         >
+          {/* Image upload field */}
           <Form.Item
             name="image"
             label="Image"
@@ -115,7 +125,7 @@ export default function CreateMeme() {
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>
-
+          {/* Caption input field */}
           <Form.Item
             name="caption"
             label="Caption"
@@ -129,6 +139,7 @@ export default function CreateMeme() {
             <Input.TextArea rows={6} onChange={handleChangeCaption} />
           </Form.Item>
 
+          {/* X coordinate input field */}
           <Form.Item label="X coordinate">
             <Form.Item name="x" noStyle>
               <InputNumber onChange={handleXCoordinateChange} />
@@ -143,6 +154,7 @@ export default function CreateMeme() {
             </span>
           </Form.Item>
 
+          {/* Y coordinate input field */}
           <Form.Item label="Y coordinate">
             <Form.Item name="y" noStyle>
               <InputNumber onChange={handleYCoordinateChange} />
@@ -156,7 +168,7 @@ export default function CreateMeme() {
               px
             </span>
           </Form.Item>
-
+          {/* Color picker field */}
           <Form.Item
             name="color"
             label="Color"
@@ -169,7 +181,7 @@ export default function CreateMeme() {
           >
             <ColorPicker onChange={handleChangeColor} />
           </Form.Item>
-
+          {/* Submit button */}
           <Form.Item
             wrapperCol={{
               span: 12,
@@ -184,6 +196,7 @@ export default function CreateMeme() {
           </Form.Item>
         </Form>
       </Col>
+      {/* Overview section */}
       <Col span={12}>
         <h1>Overview</h1>
         {image && (

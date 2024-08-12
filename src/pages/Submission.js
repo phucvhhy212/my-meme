@@ -6,14 +6,22 @@ import { toast } from "react-toastify";
 import { FONT_SIZE, IMAGE_WIDTH, LINE_HEIGHT } from "../constants/constant";
 
 export default function Submission() {
+    // Get the submission ID from the URL parameters
     const param = useParams()
+
+    // State variable to store the meme data
     const [meme,setMeme] = useState()
+
+    // Fetch the submission data when the component mounts
     useEffect(() => {
         getSubmission(param.id)
+         // Set the meme data on successful response
          .then(res => setMeme(res.data))
+         // Show error toast on failure
          .catch(e => toast.error("Server error"))        
     },[])
     return (
+        // Render the meme card if meme data is available
         meme && <Card
             styles={{ body: { padding: 0 } }}
             style={{
